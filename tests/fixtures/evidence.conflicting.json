@@ -1,0 +1,353 @@
+{
+  "schema_version": "1.0",
+  "captured_at": "2026-08-27T06:00:00Z",
+  "sources": [
+    {
+      "source": "amazon-us-live",
+      "source_type": "amazon_live",
+      "status": "available",
+      "captured_at": "2026-08-27T06:00:00Z",
+      "notes": "Synthetic live marketplace fixture."
+    },
+    {
+      "source": "sif",
+      "source_type": "sif",
+      "status": "available",
+      "captured_at": "2026-08-27T06:01:00Z",
+      "notes": "Synthetic keyword estimate."
+    },
+    {
+      "source": "sorftime",
+      "source_type": "sorftime",
+      "status": "partial",
+      "captured_at": "2026-08-27T06:02:00Z",
+      "notes": "Synthetic category and family demand estimates."
+    },
+    {
+      "source": "amazon-ads-backend",
+      "source_type": "seller_backend",
+      "status": "unavailable",
+      "captured_at": null,
+      "notes": "No covered backend export was supplied."
+    },
+    {
+      "source": "analyst-review",
+      "source_type": "analyst",
+      "status": "available",
+      "captured_at": "2026-08-27T06:05:00Z",
+      "notes": "Synthetic analytical conclusions derived from labelled evidence."
+    }
+  ],
+  "parent": {
+    "asin": "B000000000",
+    "title": {
+      "text": "Synthetic Portable Mobility Family",
+      "source": "amazon-us-live",
+      "source_type": "amazon_live",
+      "evidence_class": "confirmed_live",
+      "scope": "parent_family",
+      "captured_at": "2026-08-27T06:00:00Z",
+      "status": "available",
+      "notes": "Synthetic visible parent title."
+    },
+    "brand": "ExampleBrand"
+  },
+  "children": [
+    {
+      "asin": "B000000001",
+      "label": "Standard",
+      "price": {
+        "value": 199.99,
+        "unit": "USD",
+        "source": "amazon-us-live",
+        "source_type": "amazon_live",
+        "evidence_class": "confirmed_live",
+        "scope": "child_asin",
+        "captured_at": "2026-08-27T06:00:00Z",
+        "status": "available",
+        "notes": "Visible synthetic price."
+      },
+      "sales_series": {
+        "points": [
+          {"period": "2026-05", "value": 10},
+          {"period": "2026-06", "value": 12},
+          {"period": "2026-07", "value": 15},
+          {"period": "2026-08", "value": 20}
+        ],
+        "unit": "units/month",
+        "source": "sorftime",
+        "source_type": "sorftime",
+        "evidence_class": "third_party_estimate",
+        "scope": "parent_family",
+        "captured_at": "2026-08-27T06:02:00Z",
+        "status": "available",
+        "notes": "Synthetic child lookup returned a likely family-level series."
+      },
+      "findings": [
+        {
+          "text": "Clear entry price",
+          "source": "analyst-review",
+          "source_type": "analyst",
+          "evidence_class": "inference",
+          "scope": "child_asin",
+          "captured_at": "2026-08-27T06:05:00Z",
+          "status": "available",
+          "notes": "Interpretation of current child price context."
+        },
+        {
+          "text": "Backend conversion data unavailable",
+          "source": "analyst-review",
+          "source_type": "analyst",
+          "evidence_class": "inference",
+          "scope": "child_asin",
+          "captured_at": "2026-08-27T06:05:00Z",
+          "status": "available",
+          "notes": "Derived from backend source status."
+        }
+      ],
+      "actions": [
+        {
+          "text": "Verify child-specific specifications before copy changes",
+          "source": "analyst-review",
+          "source_type": "analyst",
+          "evidence_class": "inference",
+          "scope": "child_asin",
+          "captured_at": "2026-08-27T06:05:00Z",
+          "status": "available",
+          "notes": "Bounded child-specific recommendation."
+        }
+      ]
+    },
+    {
+      "asin": "B000000002",
+      "label": "Premium",
+      "price": {
+        "value": 249.99,
+        "unit": "USD",
+        "source": "amazon-us-live",
+        "source_type": "amazon_live",
+        "evidence_class": "confirmed_live",
+        "scope": "child_asin",
+        "captured_at": "2026-08-27T06:00:00Z",
+        "status": "available",
+        "notes": "Visible synthetic price."
+      },
+      "sales_series": {
+        "points": [
+          {"period": "2026-05", "value": 10},
+          {"period": "2026-06", "value": 12},
+          {"period": "2026-07", "value": 15},
+          {"period": "2026-08", "value": 20}
+        ],
+        "unit": "units/month",
+        "source": "sorftime",
+        "source_type": "sorftime",
+        "evidence_class": "third_party_estimate",
+        "scope": "parent_family",
+        "captured_at": "2026-08-27T06:02:00Z",
+        "status": "available",
+        "notes": "Synthetic child lookup returned a likely family-level series."
+      },
+      "findings": [
+        {
+          "text": "Premium price requires differentiated proof",
+          "source": "analyst-review",
+          "source_type": "analyst",
+          "evidence_class": "inference",
+          "scope": "child_asin",
+          "captured_at": "2026-08-27T06:05:00Z",
+          "status": "available",
+          "notes": "Interpretation of current child price context."
+        }
+      ],
+      "actions": [
+        {
+          "text": "Keep sibling claims isolated until verified",
+          "source": "analyst-review",
+          "source_type": "analyst",
+          "evidence_class": "inference",
+          "scope": "child_asin",
+          "captured_at": "2026-08-27T06:05:00Z",
+          "status": "available",
+          "notes": "Variation safety recommendation."
+        }
+      ]
+    }
+  ],
+  "market": {
+    "category": {
+      "text": "Synthetic Mobility Category",
+      "source": "sorftime",
+      "source_type": "sorftime",
+      "evidence_class": "third_party_estimate",
+      "scope": "category",
+      "captured_at": "2026-08-27T06:02:00Z",
+      "status": "available",
+      "notes": "Synthetic category classification."
+    },
+    "metrics": [
+      {
+        "name": "median_price",
+        "value": 219.99,
+        "unit": "USD",
+        "source": "sorftime",
+        "source_type": "sorftime",
+        "evidence_class": "third_party_estimate",
+        "scope": "category",
+        "captured_at": "2026-08-27T06:02:00Z",
+        "status": "available",
+        "notes": "Synthetic category estimate."
+      }
+    ]
+  },
+  "keywords": [
+    {
+      "phrase": "portable sample chair",
+      "estimates": [
+        {
+          "value": 31000,
+          "unit": "searches/month",
+          "source": "sif",
+          "source_type": "sif",
+          "evidence_class": "third_party_estimate",
+          "scope": "keyword",
+          "captured_at": "2026-08-27T06:01:00Z",
+          "status": "available",
+          "notes": "Synthetic SIF estimate."
+        },
+        {
+          "value": 52000,
+          "unit": "searches/month",
+          "source": "sorftime",
+          "source_type": "sorftime",
+          "evidence_class": "third_party_estimate",
+          "scope": "keyword",
+          "captured_at": "2026-08-27T06:02:00Z",
+          "status": "available",
+          "notes": "Synthetic Sorftime estimate; methodology differs."
+        }
+      ]
+    }
+  ],
+  "competitors": [
+    {
+      "asin": "B000000010",
+      "segment": "standard",
+      "price": {
+        "value": 209.99,
+        "unit": "USD",
+        "source": "amazon-us-live",
+        "source_type": "amazon_live",
+        "evidence_class": "confirmed_live",
+        "scope": "competitor",
+        "captured_at": "2026-08-27T06:00:00Z",
+        "status": "available",
+        "notes": "Visible synthetic competitor price."
+      },
+      "similarity": {
+        "text": "Synthetic comparator; similarity must be verified.",
+        "source": "analyst-review",
+        "source_type": "analyst",
+        "evidence_class": "inference",
+        "scope": "competitor",
+        "captured_at": "2026-08-27T06:05:00Z",
+        "status": "available",
+        "notes": "Synthetic like-for-like assessment."
+      }
+    }
+  ],
+  "advertising": {
+    "front_end_observations": [
+      {
+        "text": "Synthetic traffic score: 76",
+        "source": "sif",
+        "source_type": "sif",
+        "evidence_class": "third_party_estimate",
+        "scope": "parent_family",
+        "captured_at": "2026-08-27T06:01:00Z",
+        "status": "available",
+        "notes": "Front-end model score, not a backend metric."
+      },
+      {
+        "text": "Two sponsored placements were visible",
+        "source": "amazon-us-live",
+        "source_type": "amazon_live",
+        "evidence_class": "confirmed_live",
+        "scope": "parent_family",
+        "captured_at": "2026-08-27T06:00:00Z",
+        "status": "available",
+        "notes": "Visible placement observation only."
+      }
+    ],
+    "backend_metrics": [
+      {
+        "name": "acos",
+        "value": null,
+        "unit": "percent",
+        "source": "amazon-ads-backend",
+        "source_type": "seller_backend",
+        "evidence_class": "unavailable",
+        "scope": "campaign",
+        "captured_at": null,
+        "status": "unavailable",
+        "reason": "No covered Amazon Ads backend report was supplied.",
+        "notes": "Do not infer ACOS from traffic scores or visible placements."
+      }
+    ]
+  },
+  "listing": {
+    "findings": [
+      {
+        "text": "Parent and child claims require separate verification",
+        "source": "analyst-review",
+        "source_type": "analyst",
+        "evidence_class": "inference",
+        "scope": "parent_family",
+        "captured_at": "2026-08-27T06:05:00Z",
+        "status": "available",
+        "notes": "Variation consistency conclusion."
+      },
+      {
+        "text": "Current prices were confirmed only at the captured time",
+        "source": "analyst-review",
+        "source_type": "analyst",
+        "evidence_class": "inference",
+        "scope": "parent_family",
+        "captured_at": "2026-08-27T06:05:00Z",
+        "status": "available",
+        "notes": "Freshness limitation derived from live evidence."
+      }
+    ]
+  },
+  "summary": [
+    {
+      "text": "The two child calls returned an identical sales series; treat it as one family-level estimate.",
+      "source": "analyst-review",
+      "source_type": "analyst",
+      "evidence_class": "inference",
+      "scope": "parent_family",
+      "captured_at": "2026-08-27T06:05:00Z",
+      "status": "available",
+      "notes": "Derived from duplicate-series validation."
+    },
+    {
+      "text": "Keyword sources disagree and should remain side by side.",
+      "source": "analyst-review",
+      "source_type": "analyst",
+      "evidence_class": "inference",
+      "scope": "parent_family",
+      "captured_at": "2026-08-27T06:05:00Z",
+      "status": "available",
+      "notes": "Derived from cross-source comparison."
+    }
+  ],
+  "actions_30_60_90": {
+    "30": [{"text": "Verify child specifications and collect covered backend advertising exports", "source": "analyst-review", "source_type": "analyst", "evidence_class": "inference", "scope": "parent_family", "captured_at": "2026-08-27T06:05:00Z", "status": "available", "notes": "First-stage evidence repair action."}],
+    "60": [{"text": "Test segment-specific listing messages after evidence review", "source": "analyst-review", "source_type": "analyst", "evidence_class": "inference", "scope": "parent_family", "captured_at": "2026-08-27T06:05:00Z", "status": "available", "notes": "Second-stage bounded test."}],
+    "90": [{"text": "Re-run live market evidence and compare like-for-like windows", "source": "analyst-review", "source_type": "analyst", "evidence_class": "inference", "scope": "parent_family", "captured_at": "2026-08-27T06:05:00Z", "status": "available", "notes": "Third-stage revalidation action."}]
+  },
+  "limitations": [
+    "All fixture values are synthetic.",
+    "No Amazon Ads backend report is available."
+  ]
+}

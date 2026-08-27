@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="{{LANG}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>{{TITLE}}</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #64748b;
+      --line: #dbe3ee;
+      --panel: #ffffff;
+      --canvas: #f4f7fb;
+      --accent: #0f766e;
+      --accent-soft: #ccfbf1;
+      --warning: #9a3412;
+      --warning-soft: #ffedd5;
+      --unavailable: #6b7280;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--canvas);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+    .shell { width: calc(100% - 32px); max-width: 1180px; margin: 0 auto; }
+    header {
+      padding: 56px 0 44px;
+      color: white;
+      background: linear-gradient(135deg, #0f172a 0%, #164e63 62%, #0f766e 100%);
+    }
+    .eyebrow { margin: 0 0 10px; color: #99f6e4; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.13em; text-transform: uppercase; }
+    h1 { max-width: 900px; margin: 0; font-size: clamp(2rem, 5vw, 3.7rem); line-height: 1.07; letter-spacing: -0.04em; }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+    .meta span { padding: 7px 11px; border: 1px solid rgba(255,255,255,.22); border-radius: 999px; background: rgba(255,255,255,.08); font-size: .88rem; }
+    nav { position: sticky; top: 0; z-index: 5; overflow-x: auto; background: rgba(255,255,255,.96); border-bottom: 1px solid var(--line); backdrop-filter: blur(12px); scrollbar-width: none; }
+    nav::-webkit-scrollbar { display: none; }
+    nav .shell { display: flex; gap: 18px; width: max-content; max-width: none; padding: 0 max(16px, calc((100vw - 1180px) / 2)); }
+    nav a { padding: 14px 0; color: #334155; font-size: .85rem; font-weight: 700; text-decoration: none; white-space: nowrap; }
+    nav a:hover { color: var(--accent); }
+    main { padding: 34px 0 64px; }
+    section { min-width: 0; margin-bottom: 22px; padding: 26px; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); box-shadow: 0 12px 30px rgba(15,23,42,.05); }
+    h2 { margin: 0 0 16px; font-size: 1.35rem; letter-spacing: -.02em; }
+    h3 { margin: 22px 0 10px; font-size: 1rem; }
+    p { margin: 8px 0; }
+    ul { margin: 10px 0; padding-left: 22px; }
+    li + li { margin-top: 7px; }
+    .callout { padding: 14px 16px; border-left: 4px solid var(--accent); border-radius: 8px; background: #f0fdfa; }
+    .callout.warning { border-left-color: var(--warning); background: var(--warning-soft); }
+    .table-wrap { max-width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; -webkit-overflow-scrolling: touch; }
+    table { width: 100%; min-width: 720px; border-collapse: collapse; font-size: .9rem; }
+    th { color: #334155; background: #f8fafc; font-size: .76rem; letter-spacing: .04em; text-align: left; text-transform: uppercase; }
+    th, td { padding: 12px 13px; border-bottom: 1px solid var(--line); vertical-align: top; overflow-wrap: anywhere; }
+    tr:last-child td { border-bottom: 0; }
+    .status { display: inline-flex; padding: 3px 8px; border-radius: 999px; font-size: .74rem; font-weight: 800; text-transform: uppercase; }
+    .status.available { color: #115e59; background: var(--accent-soft); }
+    .status.partial { color: var(--warning); background: var(--warning-soft); }
+    .status.unavailable { color: #374151; background: #e5e7eb; }
+    .muted { color: var(--muted); }
+    .provenance { display: inline-block; color: var(--muted); font-size: .78rem; line-height: 1.45; }
+    .split { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
+    footer { padding: 26px 0 44px; color: var(--muted); font-size: .82rem; text-align: center; }
+    @media (max-width: 760px) {
+      .shell { width: calc(100% - 20px); }
+      header { padding: 40px 0 34px; }
+      section { padding: 19px; border-radius: 14px; }
+      .split { grid-template-columns: 1fr; }
+    }
+    @media print {
+      body { background: white; }
+      nav { display: none; }
+      header { color: black; background: white; border-bottom: 2px solid #111827; }
+      .eyebrow { color: #0f766e; }
+      .meta span { border-color: #cbd5e1; background: white; }
+      section { break-inside: avoid; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="shell">
+      <p class="eyebrow">{{EYEBROW}}</p>
+      <h1>{{TITLE}}</h1>
+      <div class="meta">{{REPORT_META}}</div>
+    </div>
+  </header>
+  <nav aria-label="Report sections">
+    <div class="shell">
+      <a href="#summary">{{NAV_SUMMARY}}</a>
+      <a href="#sources">{{NAV_SOURCES}}</a>
+      <a href="#children">{{NAV_CHILDREN}}</a>
+      <a href="#market">{{NAV_MARKET}}</a>
+      <a href="#keywords">{{NAV_KEYWORDS}}</a>
+      <a href="#competitors">{{NAV_COMPETITORS}}</a>
+      <a href="#advertising">{{NAV_ADVERTISING}}</a>
+      <a href="#listing">{{NAV_LISTING}}</a>
+      <a href="#actions">{{NAV_ACTIONS}}</a>
+      <a href="#limitations">{{NAV_LIMITATIONS}}</a>
+    </div>
+  </nav>
+  <main class="shell">
+    <section id="summary"><h2>{{H_SUMMARY}}</h2>{{EXECUTIVE_SUMMARY}}</section>
+    <section id="sources"><h2>{{H_SOURCES}}</h2>{{SOURCE_STATUS}}</section>
+    <section id="children"><h2>{{H_CHILDREN}}</h2>{{CHILD_MATRIX}}</section>
+    <section id="market"><h2>{{H_MARKET}}</h2>{{MARKET}}</section>
+    <section id="keywords"><h2>{{H_KEYWORDS}}</h2>{{KEYWORDS}}</section>
+    <section id="competitors"><h2>{{H_COMPETITORS}}</h2>{{COMPETITORS}}</section>
+    <section id="advertising"><h2>{{H_ADVERTISING}}</h2>{{ADVERTISING}}</section>
+    <section id="listing"><h2>{{H_LISTING}}</h2>{{LISTING}}</section>
+    <section id="actions"><h2>{{H_ACTIONS}}</h2>{{ACTIONS}}</section>
+    <section id="limitations"><h2>{{H_LIMITATIONS}}</h2>{{LIMITATIONS}}</section>
+  </main>
+  <footer class="shell">{{FOOTER}}</footer>
+</body>
+</html>

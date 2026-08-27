@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "marketplace": "US",
+  "parent_asin": "B000000000",
+  "child_asins": [
+    "B000000001",
+    "B000000002"
+  ],
+  "language": "en-US",
+  "report_date": "2026-08-27",
+  "publish": false
+}
+

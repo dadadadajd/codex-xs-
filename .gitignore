@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+
+# Generated audit artifacts
+outputs/
+tmp/
+*.validation.json
+
+# Local secrets and connector configuration
+.env
+.env.*
+!.env.example
+credentials.json
+secrets.json
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+

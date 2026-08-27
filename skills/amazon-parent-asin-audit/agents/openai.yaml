@@ -1,0 +1,4 @@
+interface:
+  display_name: "Amazon Parent ASIN Audit"
+  short_description: "Evidence-backed Amazon family audits and HTML reports"
+  default_prompt: "Audit this Amazon parent and child ASIN family using live evidence, preserve source boundaries, and produce a validated shareable report."
