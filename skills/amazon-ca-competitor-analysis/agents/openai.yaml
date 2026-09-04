@@ -1,0 +1,4 @@
+interface:
+  display_name: "Amazon Canada Competitor Analysis"
+  short_description: "Amazon.ca competitor research and listing strategy"
+  default_prompt: "Analyze Amazon.ca competitors using Canadian marketplace evidence, compare listings, keywords, visuals, reviews, pricing, and provide prioritized optimization actions."
