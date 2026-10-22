@@ -79,5 +79,17 @@ python skills/amazon-parent-asin-audit/scripts/render_report.py --input tests/fi
 python skills/amazon-parent-asin-audit/scripts/validate_delivery.py --input tests/fixtures/input.valid.json --evidence tests/fixtures/evidence.conflicting.json --report tmp/report.html
 ```
 
-The project runtime scripts use only the Python standard library. PyYAML is a
-development-only dependency for Skill metadata validation.
+The existing non-image workflow uses only the Python standard library. PyYAML
+is a development-only dependency; image checks require the optional pinned
+Pillow dependency in `requirements-images.txt`.
+
+## Image gates
+
+Follow [image-quality.md](image-quality.md). Keep the manifest, JSON results and
+current files together. Pass the same manifest/root to rendering and delivery
+validation. Per-file evidence, expected dimensions, corrective actions and
+pending/stale visual reviews must remain visible in the HTML. A valid diagnostic
+report may describe bad assets. Before delivering creative assets, additionally
+require `--require-image-approval` and `images_approved:true`; never bypass a
+failed geometry check with a visual pass. Use originals for visual review; the
+HTML intentionally contains no image binary or private metadata.

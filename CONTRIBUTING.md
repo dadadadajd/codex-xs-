@@ -29,8 +29,19 @@ python skills/amazon-parent-asin-audit/scripts/validate_delivery.py `
   --report tmp/report.html
 ```
 
-Metadata validation uses the pinned PyYAML development dependency. Project
-runtime scripts intentionally use only the Python standard library.
+Metadata validation uses pinned PyYAML. The original audit workflow uses only
+the standard library; image checks use the optional pinned Pillow dependency.
+Run the image fixture path too:
+
+```sh
+python tests/generate_image_fixtures.py
+python skills/amazon-parent-asin-audit/scripts/audit_images.py --manifest tests/fixtures/images.manifest.json --output tmp/image-quality.json
+python skills/amazon-parent-asin-audit/scripts/render_report.py --input tests/fixtures/input.valid.json --evidence tests/fixtures/evidence.conflicting.json --image-manifest tests/fixtures/images.manifest.json --output tmp/images-report.html
+python skills/amazon-parent-asin-audit/scripts/validate_delivery.py --input tests/fixtures/input.valid.json --evidence tests/fixtures/evidence.conflicting.json --image-manifest tests/fixtures/images.manifest.json --report tmp/images-report.html
+```
+
+The fixture intentionally includes a wrong-size image and pending reviews.
+Diagnostic validation must pass; strict image approval must fail with exit 2.
 
 ## Privacy rules
 

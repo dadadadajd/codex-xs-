@@ -31,6 +31,7 @@ Skill 把这些错误固化成证据契约和自动质量门槛。
 - 跨来源关键词数据并列展示。
 - 响应式、打印友好、无需联网的 HTML 报告。
 - ASIN/来源覆盖、占位符和敏感信息自动检查。
+- 图片尺寸、比例、真实格式、目标规格的批量检测，以及独立的视觉复核和逐图HTML结果。
 - 用户明确授权后的可选公开发布流程。
 
 ## 安装
@@ -39,8 +40,32 @@ Skill 把这些错误固化成证据契约和自动质量门槛。
 Codex Skills 目录，并保持目录名不变。刷新或重启 Codex，使 Skill 列表重新
 加载。
 
-脚本也可以在克隆目录中独立执行，要求 Python 3.10 及以上，不依赖第三方
-运行库。
+脚本也可以在克隆目录中独立执行，要求 Python 3.10 及以上。原有流程仍只用
+标准库；图片检测需安装 `skills/amazon-parent-asin-audit/requirements-images.txt`。
+
+## 商品图片与 A+ 素材质检
+
+支持 2000×2000、1600×1600、1464×600、600×450、仅4:3比例及自定义尺寸。
+通过清单为每张图配置目标、套图分组、参考实拍、配件、屏显、文字和Logo要求。
+完整契约与人工复核记录见[图片质检说明](skills/amazon-parent-asin-audit/references/image-quality.md)。
+
+```sh
+python -m pip install -r skills/amazon-parent-asin-audit/requirements-images.txt
+python skills/amazon-parent-asin-audit/scripts/audit_images.py --manifest tests/fixtures/images.manifest.json --output tmp/image-quality.json
+python skills/amazon-parent-asin-audit/scripts/render_report.py --input tests/fixtures/input.valid.json --evidence tests/fixtures/evidence.conflicting.json --image-manifest tests/fixtures/images.manifest.json --output tmp/images-report.html
+python skills/amazon-parent-asin-audit/scripts/validate_delivery.py --input tests/fixtures/input.valid.json --evidence tests/fixtures/evidence.conflicting.json --image-manifest tests/fixtures/images.manifest.json --report tmp/images-report.html
+```
+
+报告逐图展示实测值、自动问题及修改建议，并单独列出产品外观、配件结构、
+文字标注、Logo、套图一致性、背景扩展的人工复核。提供原图及位置后，可比较
+原始区域像素是否保留；只有4:3比例不能证明产品未缩放或裁切。本模块不做
+自动OCR、语义识别或Logo检测，不把文件检测通过当作视觉正确。
+
+样例全部是合成几何图片，含一张故意错误尺寸的图片，人工复核均为待确认。
+诊断报告可以有效地记录不合格图片。正式交付素材前，在交付校验命令中加入
+`--require-image-approval`；独立图片命令使用 `--require-approval`。
+复核指纹会随原图、参考图、要求或套图成员变化而失效。原有不带图片参数的
+命令保持兼容，也不会声称检查过图片。
 
 ## 在 Codex 中使用
 

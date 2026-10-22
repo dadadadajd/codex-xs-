@@ -1,6 +1,6 @@
 ---
 name: amazon-parent-asin-audit
-description: Use when a user needs a repeatable Amazon parent and child ASIN market, keyword, advertising-boundary, listing, or shareable HTML audit using live Amazon evidence with optional SIF and Sorftime enrichment.
+description: Use when a user needs a repeatable Amazon parent and child ASIN market, keyword, advertising-boundary, listing, or shareable HTML audit using live Amazon evidence with optional SIF and Sorftime enrichment, or batch quality checks of Listing, A+ and brand-story images with separate automated file checks and recorded visual review.
 ---
 
 # Amazon Parent ASIN Audit
@@ -34,6 +34,11 @@ metrics, and validate the structured evidence before rendering or publishing.
   report; otherwise deliver the validated local HTML only.
 
 ## Inputs
+
+For an image-only request, read [image-quality.md](references/image-quality.md)
+and run the image workflow below without collecting marketplace evidence or
+inventing ASINs. For an existing ASIN audit, add the same image workflow to the
+Listing section and pass its manifest to rendering and delivery validation.
 
 Create `input.json` before collection:
 
@@ -125,6 +130,32 @@ Follow [report-contract.md](references/report-contract.md). Separate:
 Recommendations must name their evidence and scope. When the evidence supports
 only a test, say what to test and which backend result will decide it.
 
+### 5a. Audit supplied creative assets when requested
+
+Read [image-quality.md](references/image-quality.md) for the batch contract,
+presets, CLI, review record and strict creative approval gate. Install the
+optional `requirements-images.txt` dependency. Record each file's target,
+product set, source kind, verified references and exact text/appearance rules.
+Do not manufacture findings for inaccessible prior images; use explicitly
+labelled synthetic fixtures when implementing or demonstrating the module.
+
+```powershell
+python scripts/audit_images.py --manifest images.json --output image-quality.json
+```
+
+Keep automatic file findings separate from the six visual review items. Open
+originals and references at full resolution, compare the whole set, and record
+specific discrepancies and corrections. A correct ratio alone cannot establish
+that the product was not stretched, scaled or cropped. For background-only
+expansion, supply the original and pixel offset; resolve incompatible source
+and target dimensions before editing. Never infer product, logo or text
+correctness from a successful file check.
+
+Record only actual visual decisions and copy the current review fingerprint.
+Changed files, references, requirements or set membership require a new review.
+Use `--require-approval` before approving the creative files. A diagnostic
+report may describe failed/pending files, but must not call them approved.
+
 ### 6. Render and validate delivery
 
 Create an output directory named `<parent>-<marketplace>-<date>` containing the
@@ -136,6 +167,11 @@ Run from the skill directory:
 python scripts/render_report.py --input input.json --evidence evidence.json --output report.html
 python scripts/validate_delivery.py --input input.json --evidence evidence.json --report report.html --output validation.json
 ```
+
+When including images, add `--image-manifest images.json` to both commands
+(plus `--image-root` if needed). Both recompute file checks. Use
+`--require-image-approval` for final creative delivery; diagnostic report
+validity and `images_approved` are separate gates.
 
 Open `report.html` and visually inspect desktop and narrow layouts. Apply the
 release gates in [quality-gates.md](references/quality-gates.md). Do not deliver

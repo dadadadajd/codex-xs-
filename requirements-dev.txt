@@ -1,1 +1,2 @@
 PyYAML==6.0.2
+-r skills/amazon-parent-asin-audit/requirements-images.txt

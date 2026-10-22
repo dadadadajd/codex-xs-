@@ -7,10 +7,12 @@ import argparse
 import json
 import re
 import sys
+from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
 
 from common import ContractError, PLACEHOLDER_RE, dump_json, load_json
+from image_quality_report import render_image_quality
 from validate_evidence import iter_claims, iter_metrics, validate_evidence
 from validate_input import normalize_input
 
@@ -35,10 +37,38 @@ def scan_sensitive(text: str) -> list[str]:
     return [name for name, pattern in SENSITIVE_PATTERNS.items() if pattern.search(text)]
 
 
+class ChildMatrixParser(HTMLParser):
+    """Scope child coverage to its matrix, allowing ASINs in creative filenames."""
+    def __init__(self):
+        super().__init__()
+        self.depth = 0
+        self.sections = 0
+        self.text: list[str] = []
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "section":
+            if self.depth:
+                self.depth += 1
+            elif dict(attrs).get("id") == "children":
+                self.depth = 1
+                self.sections += 1
+
+    def handle_endtag(self, tag):
+        if tag == "section" and self.depth:
+            self.depth -= 1
+
+    def handle_data(self, data):
+        if self.depth:
+            self.text.append(data)
+
+
 def validate_delivery(
     input_data: dict[str, Any],
     evidence: dict[str, Any],
     html: str,
+    *,
+    image_quality: dict | None = None,
+    require_image_approval: bool = False,
 ) -> dict[str, Any]:
     errors: list[str] = []
     error_codes: list[str] = []
@@ -74,6 +104,9 @@ def validate_delivery(
         add_error("LANGUAGE_RENDER_MISMATCH", "English report interface heading is missing.")
 
     evidence_children = [child.get("asin") for child in evidence.get("children", [])]
+    child_matrix = ChildMatrixParser()
+    child_matrix.feed(html)
+    child_text = " ".join(child_matrix.text)
     if evidence.get("parent", {}).get("asin") != normalized["parent_asin"]:
         add_error(
             "PARENT_ASIN_MISMATCH",
@@ -82,8 +115,8 @@ def validate_delivery(
     for asin in normalized["child_asins"]:
         if evidence_children.count(asin) != 1:
             add_error("EVIDENCE_CHILD_COVERAGE", f"Evidence must contain child {asin} exactly once.")
-        if html.count(asin) != 1:
-            add_error("MISSING_CHILD_ASIN", f"Rendered report must contain child {asin} exactly once.")
+        if child_matrix.sections != 1 or child_text.count(asin) != 1:
+            add_error("MISSING_CHILD_ASIN", f"Child matrix must contain child {asin} exactly once.")
 
     for child in evidence.get("children", []):
         asin = child.get("asin", "unknown")
@@ -127,10 +160,22 @@ def validate_delivery(
         if label and label not in html:
             add_error("MISSING_SOURCE_LABEL", f"Rendered report is missing source label: {label}")
 
+    if image_quality is not None:
+        expected = render_image_quality(image_quality, normalized["language"])
+        if html.count(expected) != 1 or html.count('id="image-quality"') != 1:
+            add_error("IMAGE_REPORT_MISMATCH", "Image section is missing, modified, duplicated or stale; rerender from the current image manifest.")
+        if not image_quality["approved"]:
+            warnings.append("Image batch contains failures or pending visual reviews; this report does not approve those assets.")
+            if require_image_approval:
+                add_error("IMAGES_NOT_APPROVED", "Every image must pass automatic checks and current recorded visual review before creative delivery.")
+    elif 'id="image-quality"' in html or require_image_approval:
+        add_error("IMAGE_MANIFEST_REQUIRED", "Supply --image-manifest to recheck image coverage and current file contents.")
+
     combined = "\n".join(
         [
             json.dumps(input_data, ensure_ascii=False),
             json.dumps(evidence, ensure_ascii=False),
+            json.dumps(image_quality, ensure_ascii=False),
             html,
         ]
     )
@@ -142,6 +187,7 @@ def validate_delivery(
         "error_codes": error_codes,
         "errors": errors,
         "warnings": warnings,
+        "images_approved": image_quality["approved"] if image_quality is not None else None,
         "checks": {
             "child_count": len(normalized["child_asins"]),
             "source_count": len(evidence.get("sources", [])),
@@ -157,6 +203,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--evidence", required=True, help="Path to evidence.json")
     parser.add_argument("--report", required=True, help="Path to report.html")
     parser.add_argument("--output", help="Optional validation.json destination")
+    parser.add_argument("--image-manifest", help="Recompute image checks from the current manifest and files")
+    parser.add_argument("--image-root", help="Image root (default: manifest's parent)")
+    parser.add_argument("--require-image-approval", action="store_true", help="Also block creative delivery for failed/pending images")
     return parser
 
 
@@ -164,7 +213,14 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     try:
         report = Path(args.report).read_text(encoding="utf-8")
-        result = validate_delivery(load_json(args.input), load_json(args.evidence), report)
+        if args.image_root and not args.image_manifest:
+            raise ContractError("--image-root requires --image-manifest")
+        image_quality = None
+        if args.image_manifest:
+            from audit_images import audit_file
+            image_quality = audit_file(args.image_manifest, args.image_root)
+        result = validate_delivery(load_json(args.input), load_json(args.evidence), report,
+                                   image_quality=image_quality, require_image_approval=args.require_image_approval)
         text = dump_json(result, args.output)
         if not args.output:
             sys.stdout.write(text)

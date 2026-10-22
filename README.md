@@ -36,6 +36,8 @@ quality gates.
 - Responsive, print-friendly, offline HTML rendering.
 - Delivery checks for ASIN/source coverage, unresolved placeholders, and common
   sensitive-data patterns.
+- Optional batch image checks for dimensions, ratios, encoding and delivery
+  targets, with separate recorded visual reviews and per-file HTML findings.
 - Optional public publishing workflow after explicit user authorization.
 
 ## Repository layout
@@ -64,9 +66,34 @@ Clone this repository, then copy `skills/amazon-parent-asin-audit` into your
 Codex skills directory using the same folder name. Restart or refresh Codex so
 the Skill catalog is reloaded.
 
-You can also inspect or run the deterministic scripts directly from the cloned
-Skill directory. They require Python 3.10 or later and use only the standard
-library.
+You can also run the scripts directly. They require Python 3.10 or later. The
+original workflow uses only the standard library; image audits additionally
+need `pip install -r skills/amazon-parent-asin-audit/requirements-images.txt`.
+
+## Image and A+ quality checks
+
+See [the image-quality contract](skills/amazon-parent-asin-audit/references/image-quality.md)
+for mixed-size manifests, folder batches, full commands and visual review records.
+Presets cover 2000×2000, 1600×1600, 1464×600, 600×450 and ratio-only 4:3;
+custom sizes support brand-story and other placements.
+
+```sh
+python skills/amazon-parent-asin-audit/scripts/audit_images.py --manifest tests/fixtures/images.manifest.json --output tmp/image-quality.json
+python skills/amazon-parent-asin-audit/scripts/render_report.py --input tests/fixtures/input.valid.json --evidence tests/fixtures/evidence.conflicting.json --image-manifest tests/fixtures/images.manifest.json --output tmp/images-report.html
+python skills/amazon-parent-asin-audit/scripts/validate_delivery.py --input tests/fixtures/input.valid.json --evidence tests/fixtures/evidence.conflicting.json --image-manifest tests/fixtures/images.manifest.json --report tmp/images-report.html
+```
+
+The report lists actual properties and specific corrections per file, plus
+manual checks of appearance, accessories, text, logos, set consistency and
+background expansion. With an original and offset, the module can check that
+the original pixel region was preserved; the ratio alone cannot prove this.
+It does not perform automatic OCR, semantic comparison or logo detection.
+
+The included drawings are entirely synthetic, with one deliberate size failure
+and no claimed human approval. A valid diagnostic report does **not** approve
+the images. Add `--require-image-approval` to delivery validation (or
+`--require-approval` to the image CLI) for final creative approval. Existing
+commands without image arguments remain compatible and make no image claims.
 
 ## Use in Codex
 

@@ -1,4 +1,4 @@
 interface:
   display_name: "Amazon Parent ASIN Audit"
-  short_description: "Evidence-backed Amazon family audits and HTML reports"
-  default_prompt: "Audit this Amazon parent and child ASIN family using live evidence, preserve source boundaries, and produce a validated shareable report."
+  short_description: "Amazon family audits, image checks and HTML reports"
+  default_prompt: "Use $amazon-parent-asin-audit to audit this Amazon family and its creative assets, preserve evidence boundaries, separate automatic image checks from visual review, and produce a validated report."
