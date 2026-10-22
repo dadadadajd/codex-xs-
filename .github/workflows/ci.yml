@@ -22,7 +22,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install validator dependency
+      - name: Install test and image dependencies
         run: python -m pip install --disable-pip-version-check -r requirements-dev.txt
 
       - name: Run unit tests
@@ -44,3 +44,25 @@ jobs:
           --input tests/fixtures/input.valid.json
           --evidence tests/fixtures/evidence.conflicting.json
           --report tmp/report.html
+
+      - name: Audit synthetic image batch
+        run: >-
+          python skills/amazon-parent-asin-audit/scripts/audit_images.py
+          --manifest tests/fixtures/images.manifest.json
+          --output tmp/image-quality.json
+
+      - name: Render report with image findings
+        run: >-
+          python skills/amazon-parent-asin-audit/scripts/render_report.py
+          --input tests/fixtures/input.valid.json
+          --evidence tests/fixtures/evidence.conflicting.json
+          --image-manifest tests/fixtures/images.manifest.json
+          --output tmp/images-report.html
+
+      - name: Validate image diagnostic report
+        run: >-
+          python skills/amazon-parent-asin-audit/scripts/validate_delivery.py
+          --input tests/fixtures/input.valid.json
+          --evidence tests/fixtures/evidence.conflicting.json
+          --image-manifest tests/fixtures/images.manifest.json
+          --report tmp/images-report.html

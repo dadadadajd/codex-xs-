@@ -64,6 +64,8 @@
     .muted { color: var(--muted); }
     .provenance { display: inline-block; color: var(--muted); font-size: .78rem; line-height: 1.45; }
     .split { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
+    .image-audit { border-top: 1px solid var(--line); margin-top: 26px; padding-top: 10px; overflow-wrap: anywhere; }
+    .image-audit h4 { margin: 20px 0 8px; }
     footer { padding: 26px 0 44px; color: var(--muted); font-size: .82rem; text-align: center; }
     @media (max-width: 760px) {
       .shell { width: calc(100% - 20px); }
@@ -99,6 +101,7 @@
       <a href="#competitors">{{NAV_COMPETITORS}}</a>
       <a href="#advertising">{{NAV_ADVERTISING}}</a>
       <a href="#listing">{{NAV_LISTING}}</a>
+      {{IMAGE_QUALITY_NAV}}
       <a href="#actions">{{NAV_ACTIONS}}</a>
       <a href="#limitations">{{NAV_LIMITATIONS}}</a>
     </div>
@@ -112,6 +115,7 @@
     <section id="competitors"><h2>{{H_COMPETITORS}}</h2>{{COMPETITORS}}</section>
     <section id="advertising"><h2>{{H_ADVERTISING}}</h2>{{ADVERTISING}}</section>
     <section id="listing"><h2>{{H_LISTING}}</h2>{{LISTING}}</section>
+    {{IMAGE_QUALITY}}
     <section id="actions"><h2>{{H_ACTIONS}}</h2>{{ACTIONS}}</section>
     <section id="limitations"><h2>{{H_LIMITATIONS}}</h2>{{LIMITATIONS}}</section>
   </main>

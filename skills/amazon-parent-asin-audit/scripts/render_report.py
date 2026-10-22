@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from common import ContractError, PLACEHOLDER_RE, esc, format_value, load_json
+from image_quality_report import render_image_quality
 from validate_evidence import validate_evidence
 from validate_input import normalize_input
 
@@ -264,7 +265,7 @@ def localized_warnings(codes: list[str], labels: dict[str, str]) -> list[str]:
     return [mapping[code] for code in codes if code in mapping]
 
 
-def render(input_data: dict[str, Any], evidence: dict[str, Any], template_path: str | Path | None = None) -> str:
+def render(input_data: dict[str, Any], evidence: dict[str, Any], template_path: str | Path | None = None, *, image_quality: dict | None = None) -> str:
     normalized = normalize_input(input_data)
     validation = validate_evidence(evidence)
     language = normalized["language"]
@@ -299,10 +300,14 @@ def render(input_data: dict[str, Any], evidence: dict[str, Any], template_path: 
         "ADVERTISING": render_advertising(evidence, labels, language), "LISTING": listing,
         "ACTIONS": render_actions(evidence, labels, language), "LIMITATIONS": list_html(evidence.get("limitations", []), labels),
         "FOOTER": esc(labels["footer"]),
+        "IMAGE_QUALITY": render_image_quality(image_quality, language) if image_quality is not None else "",
+        "IMAGE_QUALITY_NAV": ('<a href="#image-quality">' + ("素材质检" if language == "zh-CN" else "Image quality") + '</a>') if image_quality is not None else "",
     }
     for key in ("summary", "sources", "children", "market", "keywords", "competitors", "advertising", "listing", "actions", "limitations"):
         sections["H_" + key.upper()] = esc(labels[key])
         sections["NAV_" + key.upper()] = esc(labels["nav_" + key])
+    if image_quality is not None and "{{IMAGE_QUALITY}}" not in template:
+        raise ContractError("Custom template must include {{IMAGE_QUALITY}} when image audit is requested")
     return replace_template(template, sections)
 
 
@@ -312,13 +317,21 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--evidence", required=True, help="Path to evidence.json")
     parser.add_argument("--output", required=True, help="Destination report.html")
     parser.add_argument("--template", help="Optional custom template path")
+    parser.add_argument("--image-manifest", help="Optional image batch; recomputed from source files")
+    parser.add_argument("--image-root", help="Image root (default: manifest's parent)")
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     try:
-        rendered = render(load_json(args.input), load_json(args.evidence), args.template)
+        if args.image_root and not args.image_manifest:
+            raise ContractError("--image-root requires --image-manifest")
+        image_quality = None
+        if args.image_manifest:
+            from audit_images import audit_file
+            image_quality = audit_file(args.image_manifest, args.image_root)
+        rendered = render(load_json(args.input), load_json(args.evidence), args.template, image_quality=image_quality)
         destination = Path(args.output)
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_text(rendered, encoding="utf-8")

@@ -1,5 +1,11 @@
 # Evidence Contract
 
+Image checks use a separate optional `images.json` manifest and generated
+`image-quality.json`; see [image-quality.md](image-quality.md). Evidence schema
+1.0 and existing required fields are unchanged. Use `--image-manifest` on the
+renderer and delivery validator to add recomputed image findings. Do not insert
+unsupported image fields into evidence or treat pending visual reviews as facts.
+
 Use this contract when creating or reviewing `evidence.json`. The report may be
 written in any supported language, but field names stay in English.
 

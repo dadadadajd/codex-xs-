@@ -68,6 +68,14 @@ Check parent/child consistency, title and bullets, verified specifications,
 images, video, A+, brand story, price/coupon presentation, reviews, and visible
 contradictions. Tie each rewrite or creative action to an evidence-backed gap.
 
+For supplied image assets, append the optional image-quality section using
+[image-quality.md](image-quality.md). Show every requested file, source kind,
+target and measured properties, automatic findings, six visual review items,
+current/stale review provenance and concrete corrections. Synthetic examples
+must be labelled. Do not infer actual creative quality from metadata checks.
+Diagnostic validity and creative approval are separate. No image manifest
+means no image inspection claim. Video content remains a separate review.
+
 ### Child-specific actions
 
 Each requested child gets a separately reviewable action. Never apply one
